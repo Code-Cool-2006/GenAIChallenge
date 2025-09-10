@@ -1,0 +1,135 @@
+.login-container {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6a4bcd, #8c6de9);
+  color: #3a2f6f;
+}
+
+.login-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: white;
+  position: relative;
+}
+
+.illustration {
+  margin-bottom: 20px;
+}
+
+.login-tip {
+  font-size: 14px;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.login-upgrade-tip {
+  font-size: 12px;
+  margin-top: 5px;
+  opacity: 0.6;
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  right: 40px;
+  text-align: center;
+}
+
+.login-right {
+  flex: 1;
+  background: white;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 320px;
+}
+
+.login-form-container h2 {
+  margin-bottom: 10px;
+  color: #3a2f6f;
+}
+
+.login-form-container p {
+  margin-bottom: 20px;
+  color: #5c4db1;
+  font-weight: 600;
+}
+
+.login-form-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #5c4db1;
+}
+
+.login-form-container input {
+  width: 100%;
+  padding: 10px 8px;
+  margin-bottom: 15px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-form-container input:focus {
+  border-bottom-color: #6a4bcd;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-password a {
+  font-size: 12px;
+  color: #6a4bcd;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  background-color: #6a4bcd;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #5c4db1;
+}
+
+.create-account {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.create-account a {
+  font-size: 14px;
+  color: #6a4bcd;
+  text-decoration: none;
+}
+
+.create-account a:hover {
+  text-decoration: underline;
+}
