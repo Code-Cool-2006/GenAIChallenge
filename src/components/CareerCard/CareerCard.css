@@ -1,0 +1,181 @@
+.career-card {
+  display: flex;
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  align-items: center;
+  gap: 32px;
+  width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.career-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.badge {
+  background: #3a3a5e;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: fit-content;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.main-heading {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin: 0 0 12px 0;
+  line-height: 1.1;
+}
+
+.highlight {
+  color: #a0a0a0;
+  font-weight: 700;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  max-width: 400px;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+}
+
+.primary-btn {
+  background: white;
+  color: #1a1a2e;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.primary-btn:hover {
+  background: #e0e0e0;
+}
+
+.arrow {
+  font-size: 1.2rem;
+}
+
+.secondary-btn {
+  background: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.career-card-image img {
+  width: 300px;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+/* From Uiverse.io by kennyotsu */
+.card {
+  /* color used to softly clip top and bottom of the .words container */
+  --bg-color: #111;
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+  border-radius: 1.25rem;
+}
+.loader {
+  color: rgb(124, 124, 124);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 40px;
+  padding: 10px 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 8px;
+}
+
+.words {
+  overflow: hidden;
+  position: relative;
+}
+.words::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--bg-color) 10%,
+    transparent 30%,
+    transparent 70%,
+    var(--bg-color) 90%
+  );
+  z-index: 20;
+}
+
+.word {
+  display: block;
+  height: 100%;
+  padding-left: 6px;
+  color: #956afa;
+  animation: spin_4991 4s infinite;
+}
+
+@keyframes spin_4991 {
+  10% {
+    -webkit-transform: translateY(-102%);
+    transform: translateY(-102%);
+  }
+
+  25% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  35% {
+    -webkit-transform: translateY(-202%);
+    transform: translateY(-202%);
+  }
+
+  50% {
+    -webkit-transform: translateY(-200%);
+    transform: translateY(-200%);
+  }
+
+  60% {
+    -webkit-transform: translateY(-302%);
+    transform: translateY(-302%);
+  }
+
+  75% {
+    -webkit-transform: translateY(-300%);
+    transform: translateY(-300%);
+  }
+
+  85% {
+    -webkit-transform: translateY(-402%);
+    transform: translateY(-402%);
+  }
+
+  100% {
+    -webkit-transform: translateY(-400%);
+    transform: translateY(-400%);
+  }
+}

@@ -1,0 +1,124 @@
+.root {
+  --nav-bg: rgba(8, 12, 20, 0.55);
+  --text: #e6eef8;
+  --muted: #9aa4b2;
+  --accent: #7c5cff;
+}
+
+.navbar {
+  background: var(--nav-bg);
+}
+/* full-bleed background */
+.navbar-bleed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 18, 0.55),
+    rgba(6, 10, 18, 0.45)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.brand {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.navbar li {
+  margin: 0;
+}
+
+.logo-vite {
+  height: 80px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.navbar a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+  display: inline-block;
+}
+
+.navbar a:hover,
+.navbar a:focus {
+  background: rgba(124, 92, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(3, 7, 23, 0.45);
+  outline: none;
+}
+
+.navbar a:active {
+  transform: translateY(0);
+}
+
+.navbar a[aria-current="page"],
+.navbar a.active {
+  color: var(--accent);
+  background: rgba(124, 92, 255, 0.14);
+  box-shadow: 0 10px 30px rgba(124, 92, 255, 0.06);
+}
+
+/* Mobile responsive: stack and center */
+@media (max-width: 680px) {
+  .navbar-bleed {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .navbar-inner {
+    justify-content: center;
+    align-items: center;
+  }
+  .navbar ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .navbar a {
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+/* Accessibility helpers */
+.navbar a:focus-visible {
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.14);
+}
+.logo-vite {
+  height: 46px;
+  margin-right: 20px;
+  width: auto;
+  vertical-align: middle;
+}

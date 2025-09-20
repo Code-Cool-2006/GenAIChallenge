@@ -1,8 +1,18 @@
+--- Web Framework & Server ---
 fastapi
 uvicorn[standard]
+
+--- Database ---
 sqlalchemy
 pymysql
+
+--- Data Validation & Settings ---
 pydantic
-python-bcrypt
+python-dotenv
+
+--- Security (Passwords & JWT) ---
+passlib[bcrypt]
 python-jose[cryptography]
-PyJWT
+
+--- Google Gemini AI ---
+google-generativeai
