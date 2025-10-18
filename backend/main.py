@@ -1,8 +1,9 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base  # Assuming you have database.py
-from routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume # Assuming all these router files exist
+from contextlib import asynccontextmanager
+from .database import engine, Base  # Assuming you have database.py
+from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume # Assuming all these router files exist
 
 # Configure logging to see server status in the terminal
 logging.basicConfig(level=logging.INFO)
@@ -18,24 +19,30 @@ def create_db_and_tables():
     except Exception as e:
         logger.error(f"Error connecting to the database or creating tables: {e}")
 
+# --- Lifespan Context Manager ---
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    create_db_and_tables()
+    yield
+    # Shutdown (if needed)
+
 # --- FastAPI App Initialization ---
 app = FastAPI(
     title="CareerUp AI API",
     description="Backend services for the CareerUp platform, handling user auth, profiles, and AI-powered career tools.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
-
-# --- Startup Event ---
-# This code runs once when the application starts up to prepare the database.
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
 
 # --- CORS (Cross-Origin Resource Sharing) Middleware ---
 # This allows your React frontend to communicate with this backend.
 # IMPORTANT: For production, you should restrict this to your actual frontend domain.
 origins = [
     "http://localhost:5173",  # Default Vite/React frontend address
+    "http://localhost:5174",  # Vite/React frontend address (current)
+    "http://localhost:5175",  # Vite/React frontend address (now)
+    "http://localhost:5176",  # Vite/React frontend address (current)
     "http://localhost:3000",  # Common alternative for React dev servers
     # Add your deployed frontend URL here when you go live
 ]

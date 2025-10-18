@@ -18,7 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60  # The token will be valid for 60 minutes
 # --- Password Hashing Setup ---
 # We use passlib to handle password hashing and verification.
 # bcrypt is a strong and widely-used algorithm for this purpose.
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:

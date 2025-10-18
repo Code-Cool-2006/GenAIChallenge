@@ -1,3 +1,6 @@
-- [x] Activate virtual environment
-- [x] Install backend requirements
-- [x] Run the FastAPI server
+- [x] Add litellm to backend/requirements.txt
+- [ ] Update backend/.env with LiteLLM model configuration (use 'openai/gpt-4o' for image support) and API keys
+- [x] Update backend/services/gemini_service.py to use LiteLLM instead of direct Google Generative AI
+- [x] Update backend/routers/review_resume.py to use LiteLLM
+- [ ] Update frontend components to use backend API instead of direct Gemini calls
+- [x] Install new requirements and test AI features

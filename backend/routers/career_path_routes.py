@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-import schemas
-import services.gemini_service as gemini_service
-from database import get_db
-from models import User
-from routers.user import get_current_user
+from .. import schemas
+from ..services import gemini_service
+from ..database import get_db
+from ..models import User
+from .user import get_current_user
 
 # --- Router Setup ---
 router = APIRouter(
