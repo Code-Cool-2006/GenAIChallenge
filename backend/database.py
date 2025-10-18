@@ -9,8 +9,8 @@ load_dotenv()
 
 # --- Database Configuration ---
 # Get the database URL from environment variables, with a default value for local development.
-# The format is: "mysql+pymysql://<user>:<password>@<host>/<database_name>"
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhost/career_ai")
+# For local development, use SQLite. For production, use MySQL or PostgreSQL.
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./career_ai.db")
 
 # The engine is the core interface to the database.
 engine = create_engine(DATABASE_URL)

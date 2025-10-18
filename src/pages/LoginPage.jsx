@@ -23,7 +23,7 @@ const GoogleAuth = ({ setMessage }) => {
 const LoginPage = () => {
   const navigate = useNavigate(); // Get the navigate function
 
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "http://localhost:8001";
 
   // --- State Management ---
   const [isRegister, setIsRegister] = useState(false);
@@ -104,16 +104,37 @@ const LoginPage = () => {
     setLoading(true);
     setMessage("");
 
-    // --- MOCK IMPLEMENTATION ---
-    console.log("Simulating registration for:", { fullName, email, role });
-    setTimeout(() => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: fullName,
+          email: email,
+          password: password,
+          role: role,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         setMessage("✅ Registration successful! Please proceed to login.");
         setIsRegister(false);
         setEmail("");
         setPassword("");
         setFullName("");
-        setLoading(false);
-    }, 1500);
+      } else {
+        setMessage(`❌ ${data.detail || "Registration failed"}`);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setMessage("❌ An error occurred during registration. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -121,17 +142,35 @@ const LoginPage = () => {
     setLoading(true);
     setMessage("");
 
-    // --- MOCK IMPLEMENTATION ---
-    console.log("Simulating login for:", email);
-    setTimeout(() => {
-        localStorage.setItem("token", "fake_access_token_for_testing");
+    try {
+      const response = await fetch(`http://localhost:8001/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          username: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.access_token);
         setMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
-            // Use navigate to redirect to the Home page
-            navigate('/home'); 
+          navigate('/home');
         }, 1500);
-        setLoading(false);
-    }, 1500);
+      } else {
+        setMessage(`❌ ${data.detail || "Login failed"}`);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setMessage("❌ An error occurred during login. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRoleChange = (e) => {
