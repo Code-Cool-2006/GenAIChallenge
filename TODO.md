@@ -1,0 +1,3 @@
+- [x] Activate virtual environment
+- [x] Install backend requirements
+- [x] Run the FastAPI server
