@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import "./CSS/home.css";
 
 // --- Helper Components ---
 // Loading animation

@@ -1,40 +1,117 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
 import "./Navbar.css";
 
 function Navbar() {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrolled]);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-bleed">
-        <div className="brand">Career AI</div>
-        <div className="navbar-inner">
-          <ul>
-            <li>
-              <Link to="/home">Home</Link>
+    <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
+      <div className="navbar-container">
+        <div className="logo">
+          <span className="logo-text">Career</span>
+          <span className="logo-text gradient">AI</span>
+        </div>
+
+        <div className="menu-icon" onClick={toggleMenu}>
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </div>
+
+        <div className="nav-right">
+          <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
+            <li className="nav-item">
+              <Link to="/home" className="nav-links" onClick={closeMenu}>
+                Home
+              </Link>
             </li>
-            <li>
-              <Link to="/resume-builder">Resume Builder</Link>
+
+            <li className="nav-item">
+              <Link
+                to="/resume-builder"
+                className="nav-links"
+                onClick={closeMenu}
+              >
+                Resume Builder
+              </Link>
             </li>
-            <li>
-              <Link to="/mock-interview">Mock Interview</Link>
+
+            <li className="nav-item">
+              <Link
+                to="/resume-analyze"
+                className="nav-links"
+                onClick={closeMenu}
+              >
+                Resume Analyzer
+              </Link>
             </li>
-            <li>
-              <Link to="/about">About</Link>
+
+            <li className="nav-item">
+              <Link
+                to="/mock-interview"
+                className="nav-links"
+                onClick={closeMenu}
+              >
+                Mock Interview
+              </Link>
             </li>
-            <li>
-              <Link to="/contact">Contact</Link>
+
+            <li className="nav-item">
+              <Link
+                to="/career-roadmap"
+                className="nav-links"
+                onClick={closeMenu}
+              >
+                Career Roadmap
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/job-market" className="nav-links" onClick={closeMenu}>
+                Job Market
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/chatbot" className="nav-links" onClick={closeMenu}>
+                AI Assistant
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/about" className="nav-links" onClick={closeMenu}>
+                About
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/contact" className="nav-links" onClick={closeMenu}>
+                Contact
+              </Link>
             </li>
           </ul>
         </div>
-        <img
-          width="14 "
-          height="14"
-          src="https://img.icons8.com/external-tal-revivo-color-tal-revivo/24/external-react-a-javascript-library-for-building-user-interfaces-logo-color-tal-revivo.png"
-          alt="external-react-a-javascript-library-for-building-user-interfaces-logo-color-tal-revivo"
-          className="logo-vite"
-        />
       </div>
     </nav>
   );
