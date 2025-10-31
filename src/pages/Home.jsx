@@ -1,9 +1,32 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./CSS/home.css";
 
 const Home = () => {
   const statsRef = useRef([]);
   const observerRef = useRef(null);
+  const [hasSpoken, setHasSpoken] = useState(false);
+
+  const speakIntro = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(
+        "hello Master your career with AI-powered resume building, market intelligence, interview prep, and personalized career guidance."
+      );
+      utterance.rate = 0.9; // Slightly slower for clarity
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      // Optional: Set voice (use default if available)
+      const voices = speechSynthesis.getVoices();
+      const preferredVoice = voices.find(voice => voice.lang.startsWith('en'));
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+
+      speechSynthesis.speak(utterance);
+    } else {
+      alert('Sorry, your browser does not support text-to-speech.');
+    }
+  };
 
   useEffect(() => {
     // Smooth scroll for navigation links
@@ -97,6 +120,20 @@ const Home = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
+
+    // Auto-speak intro when robot iframe loads (only once)
+    const robotIframe = document.querySelector('.hero-visual iframe');
+    if (robotIframe && !hasSpoken) {
+      robotIframe.addEventListener('load', () => {
+        // Small delay to ensure iframe is fully loaded
+        setTimeout(() => {
+          if (!hasSpoken) {
+            speakIntro();
+            setHasSpoken(true);
+          }
+        }, 1000);
+      });
+    }
 
     return () => {
       document.removeEventListener("click", handleAnchorClick);

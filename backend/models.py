@@ -1,4 +1,4 @@
-from sqlalchemy import (Column, Integer, String, Text, Date, DateTime, 
+from sqlalchemy import (Column, Integer, String, Text, Date, DateTime,
                         ForeignKey, Enum, DECIMAL, JSON)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -30,6 +30,38 @@ class User(Base):
     activity_logs = relationship("ActivityLog", back_populates="user", cascade="all, delete-orphan")
     # A user can have only one career score record (one-to-one relationship)
     career_score = relationship("CareerScore", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    # Relationship to Student
+    student = relationship("Student", back_populates="user", uselist=False, cascade="all, delete-orphan")
+
+
+class Student(Base):
+    __tablename__ = 'students'
+
+    id = Column(Integer, primary_key=True, index=True)
+    fullname = Column(String(100))
+    email = Column(String(100), unique=True, index=True)
+    mobile = Column(String(20))
+    password_hash = Column(String(255))
+    college = Column(String(100))
+    degree = Column(String(50))
+    branch = Column(String(50))
+    year_of_study = Column(String(10))
+    cgpa = Column(String(10))
+    skills = Column(Text)
+    other_skills = Column(Text)
+    job_type = Column(String(100))
+    portfolio_url = Column(String(255))
+    github_username = Column(String(100))
+    linkedin_url = Column(String(255))
+    resume = Column(String(255))
+    created_at = Column(DateTime, server_default=func.now())
+    last_login = Column(DateTime, nullable=True)
+
+    # Foreign key to User
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=True)
+
+    # Relationship back to User
+    user = relationship("User", back_populates="student")
 
 
 class Skill(Base):

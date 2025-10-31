@@ -23,7 +23,7 @@ const GoogleAuth = ({ setMessage }) => {
 const LoginPage = () => {
   const navigate = useNavigate(); // Get the navigate function
 
-  const API_BASE_URL = "http://localhost:8001";
+  const API_BASE_URL = "http://localhost:8000";
 
   // --- State Management ---
   const [isRegister, setIsRegister] = useState(false);
@@ -143,7 +143,7 @@ const LoginPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch(`http://localhost:8001/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

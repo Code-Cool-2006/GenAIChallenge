@@ -2,8 +2,11 @@ fastapi
 uvicorn[standard]
 sqlalchemy
 pymysql
-pydantic
+pydantic[email]
 python-dotenv
-passlib[bcrypt]
+passlib[argon2]
 python-jose[cryptography]
 litellm
+google-generativeai
+argon2-cffi
+python-multipart

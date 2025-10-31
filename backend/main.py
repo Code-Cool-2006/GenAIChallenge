@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .database import engine, Base  # Assuming you have database.py
@@ -39,12 +39,9 @@ app = FastAPI(
 # This allows your React frontend to communicate with this backend.
 # IMPORTANT: For production, you should restrict this to your actual frontend domain.
 origins = [
-    "http://localhost:5173",  # Default Vite/React frontend address
-    "http://localhost:5174",  # Vite/React frontend address (current)
-    "http://localhost:5175",  # Vite/React frontend address (now)
-    "http://localhost:5176",  # Vite/React frontend address (current)
-    "http://localhost:3000",  # Common alternative for React dev servers
-    # Add your deployed frontend URL here when you go live
+    "http://localhost:5173",  # Your React app
+    "http://localhost:3000",  # Just in case you use port 3000 later
+    "*",  # Allow all origins for testing
 ]
 
 app.add_middleware(
@@ -72,5 +69,12 @@ logger.info("All routers included successfully.")
 # A simple endpoint to confirm that the server is running.
 @app.get("/", tags=["Health Check"])
 def read_root():
+    return {"message": "Welcome to the CareerUp AI Backend!"}
+
+# --- Welcome Endpoint ---
+# A new endpoint that logs request metadata and returns a welcome message.
+@app.get("/welcome", tags=["Welcome"])
+def get_welcome(request: Request):
+    logger.info(f"Request received: {request.method} {request.url.path}")
     return {"message": "Welcome to the CareerUp AI Backend!"}
 

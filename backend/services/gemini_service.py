@@ -1,9 +1,13 @@
 import os
 import litellm
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Configure Gemini API
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # --- LiteLLM Configuration ---
 # Set the model to use, e.g., 'openai/gpt-4o' for image support

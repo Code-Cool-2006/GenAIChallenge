@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from .. import schemas
 from ..database import get_db
-from ..models import User
+from ..models import User, Student
 from ..utils import security
 
 # --- Router Setup ---
@@ -29,10 +29,10 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
-    
+
     # Hash the password
     hashed_password = security.hash_password(user_data.password)
-    
+
     # Create new user instance
     new_user = User(
         full_name=user_data.full_name,
@@ -40,16 +40,28 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
         password_hash=hashed_password,
         role=user_data.role
     )
-    
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
+    # Create corresponding Student entry
+    new_student = Student(
+        fullname=user_data.full_name,
+        email=user_data.email,
+        password_hash=hashed_password,
+        user_id=new_user.user_id
+    )
+
+    db.add(new_student)
+    db.commit()
+    db.refresh(new_student)
+
     return new_user
 
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), 
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     """
@@ -66,12 +78,22 @@ def login_for_access_token(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
+    # Update last_login in User table
+    user.last_login = datetime.utcnow()
+    db.commit()
+
+    # Update last_login in Student table if exists
+    student = db.query(Student).filter(Student.user_id == user.user_id).first()
+    if student:
+        student.last_login = datetime.utcnow()
+        db.commit()
+
     # Create access token
     access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    
+
     return {"access_token": access_token, "token_type": "bearer"}
 

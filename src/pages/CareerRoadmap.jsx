@@ -163,7 +163,7 @@ export default function CareerRoadmap() {
     delay = 1000
   ) {
     if (!apiKey) throw new Error("Missing Gemini API key");
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const payload = {
       contents: [{ parts: [{ text: userQuery }] }],
