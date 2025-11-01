@@ -5,7 +5,7 @@
     rgba(2, 6, 23, 0.85)
   );
   border-top: 1px solid rgba(255, 255, 255, 0.03);
-  color: var(--muted, #cbd5e1);
+  color: #ffffff;
   padding: 2rem 1rem;
   font-size: 0.95rem;
   width: 100%;
@@ -37,7 +37,7 @@
 
 .footer-brand p {
   margin: 0;
-  color: var(--muted, #cbd5e1);
+  color: #ffffff;
   font-size: 1rem;
   line-height: 1.4;
 }
@@ -63,7 +63,7 @@
 }
 
 .footer-links a {
-  color: var(--muted, #cbd5e1);
+  color: #ffffff;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -90,7 +90,7 @@
 }
 
 .social-icons a {
-  color: var(--muted, #cbd5e1);
+  color: #ffffff;
   font-size: 1.5rem;
   transition: color 0.2s ease;
 }

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from langchain_litellm import ChatLiteLLM
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from backend.services.vertex_ai_service import vertex_ai_service
+from .vertex_ai_service import vertex_ai_service
 
 # Load environment variables from .env file
 load_dotenv()
