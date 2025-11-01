@@ -40,8 +40,6 @@ app = FastAPI(
 # IMPORTANT: For production, you should restrict this to your actual frontend domain.
 origins = [
     "http://localhost:5173",  # Your React app
-    "http://localhost:3000",  # Just in case you use port 3000 later
-    "*",  # Allow all origins for testing
 ]
 
 app.add_middleware(

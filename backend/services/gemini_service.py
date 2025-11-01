@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from langchain_litellm import ChatLiteLLM
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
+from backend.services.vertex_ai_service import vertex_ai_service
 
 # Load environment variables from .env file
 load_dotenv()
@@ -105,49 +106,76 @@ def generate_interview_feedback(question: str, user_answer: str) -> str:
         return "Sorry, there was an issue generating feedback. Please try again later."
 
 
-def analyze_resume(resume_text: str) -> dict:
+async def analyze_resume(resume_text: str, college_tier: str = "Tier 2/3",
+                        character_profile: str = "Not specified",
+                        skills: list = None) -> dict:
     """
-    Analyze a resume and provide insights using LangChain for structured JSON output.
+    Analyze a resume and provide insights using Vertex AI Gemini for enhanced analysis.
 
     Args:
         resume_text (str): The text content of the resume.
+        college_tier (str): The college tier of the student.
+        character_profile (str): The character profile from CareerBridge.
+        skills (list): Target skills for the student.
 
     Returns:
         dict: Analysis results including strengths, weaknesses, and suggestions.
     """
-    # Define the JSON structure we want
-    parser = JsonOutputParser()
-    format_instructions = parser.get_format_instructions()
-
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are a professional resume analyzer. Always respond with valid JSON."),
-        ("user", f"""
-        Analyze the following resume and provide a detailed analysis.
-
-        Resume:
-        {{resume_text}}
-
-        {format_instructions}
-
-        Provide the response in JSON format with the following structure:
-        {{
-            "overall_assessment": "string",
-            "strengths": ["string"],
-            "weaknesses": ["string"],
-            "suggestions": ["string"],
-            "ats_score": number
-        }}
-        """)
-    ])
-
     try:
-        # Create the chain
-        chain = prompt | llm | parser
+        # Use Vertex AI service for resume analysis
+        result = await vertex_ai_service.review_resume(
+            resume_text=resume_text,
+            college_tier=college_tier,
+            character_profile=character_profile,
+            skills=skills
+        )
 
-        # Run the chain
-        result = chain.invoke({"resume_text": resume_text})
+        if "error" in result:
+            return {
+                "overall_assessment": result["error"],
+                "strengths": [],
+                "weaknesses": [],
+                "suggestions": [],
+                "ats_score": 0
+            }
 
-        return result
+        # Parse the feedback into structured format
+        feedback = result.get("feedback", "")
+
+        # Extract sections from the markdown feedback
+        overall_impression = ""
+        ats_score = 0
+        actionable_feedback = []
+
+        lines = feedback.split('\n')
+        current_section = ""
+
+        for line in lines:
+            line = line.strip()
+            if line.startswith('### Overall Impression'):
+                current_section = "overall"
+            elif line.startswith('### ATS Compatibility Score:'):
+                current_section = "ats"
+                # Extract score from the line
+                import re
+                score_match = re.search(r'Score:\s*(\d+)', line)
+                if score_match:
+                    ats_score = int(score_match.group(1))
+            elif line.startswith('### Actionable Feedback'):
+                current_section = "feedback"
+            elif current_section == "overall" and line and not line.startswith('###'):
+                overall_impression += line + " "
+            elif current_section == "feedback" and line.startswith('-'):
+                actionable_feedback.append(line[1:].strip())
+
+        return {
+            "overall_assessment": overall_impression.strip() or "Resume analysis completed.",
+            "strengths": [],  # Could be enhanced to extract from feedback
+            "weaknesses": [],  # Could be enhanced to extract from feedback
+            "suggestions": actionable_feedback,
+            "ats_score": ats_score
+        }
+
     except Exception as e:
         print(f"Error analyzing resume: {str(e)}")
         return {

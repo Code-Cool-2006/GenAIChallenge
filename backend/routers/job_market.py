@@ -1,8 +1,8 @@
 import json
 import os
-import google.generativeai as genai
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from backend.services.vertex_ai_service import vertex_ai_service
 
 # --- Pydantic Model for Request Body ---
 class MarketInsightsRequest(BaseModel):
@@ -18,45 +18,31 @@ router = APIRouter(
 @router.post("/market-insights")
 async def get_market_insights(request: MarketInsightsRequest):
     """
-    Provides job market insights for a specific job title using Gemini.
+    Provides job market insights for a specific job title using Vertex AI Gemini.
     """
     print(f"Received market insights request for: {request.jobTitle}")
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction="""
-              You are a job market analyst.
-              Provide key insights for a specific job title.
-              Respond ONLY with valid JSON in this format:
-              {
-                "averageSalary": "string (e.g. '$120,000 USD')",
-                "demand": "string (e.g. 'High' or 'Growing by 15%')",
-                "topSkills": [
-                  { "name": "string", "importance": number (1-100) }
-                ]
-              }
-              Provide 5–10 top skills dynamically based on the role.
-            """
+        # Use Vertex AI service for job market analysis
+        insights_data = await vertex_ai_service.analyze_job_market(
+            skills=[request.jobTitle],  # Pass job title as primary skill
+            location="global"
         )
 
-        prompt = f'Provide job market insights for a "{request.jobTitle}".'
+        if "error" in insights_data:
+            raise HTTPException(status_code=500, detail=insights_data["error"])
 
-        print("Generating market insights from Gemini...")
-        response = model.generate_content(prompt)
-
-        if not response.text or not response.text.strip():
-            raise HTTPException(status_code=500, detail="The model returned an empty response.")
-
-        # Clean and parse the JSON response from the model
-        cleaned_text = response.text.replace("```json", "").replace("```", "").strip()
-        insights_data = json.loads(cleaned_text)
+        # Transform the response to match the expected format
+        formatted_response = {
+            "averageSalary": insights_data.get("salary_range", "Not available"),
+            "demand": insights_data.get("demand_level", "Medium"),
+            "topSkills": [
+                {"name": skill, "importance": 80} for skill in insights_data.get("emerging_trends", [])
+            ]
+        }
 
         print("Market insights generated successfully.")
-        return insights_data
+        return formatted_response
 
-    except json.JSONDecodeError:
-        print("Error decoding JSON from model response.")
-        raise HTTPException(status_code=500, detail="Failed to parse the response from the AI model.")
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
