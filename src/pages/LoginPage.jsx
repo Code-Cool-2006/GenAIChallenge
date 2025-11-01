@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Add this import
 
-// --- GoogleAuth Component (Placeholder) ---
+  // --- GoogleAuth Component (Placeholder) ---
 const GoogleAuth = ({ setMessage }) => {
   const handleGoogleLogin = () => {
-    setMessage("ℹ Google login is a placeholder feature for demonstration.");
+    setMessage("ℹ Google login integration coming soon! Please use email/password for now.");
   };
 
   return (

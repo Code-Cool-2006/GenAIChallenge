@@ -166,7 +166,9 @@ const Home = () => {
               <button className="btn btn-primary" onClick={handleCTAClick}>
                 Start Free Trial
               </button>
-              <button className="btn btn-secondary">Watch Demo</button>
+              <button className="btn btn-secondary" onClick={speakIntro}>
+                🎤 Listen Intro
+              </button>
             </div>
             <div className="hero-stats">
               <div className="stat">

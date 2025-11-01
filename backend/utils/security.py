@@ -17,8 +17,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60  # The token will be valid for 60 minutes
 
 # --- Password Hashing Setup ---
 # We use passlib to handle password hashing and verification.
-# argon2 is a strong and widely-used algorithm for this purpose.
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+# argon2 and scrypt are strong and widely-used algorithms for this purpose.
+pwd_context = CryptContext(schemes=["argon2", "scrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:

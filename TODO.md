@@ -1,20 +1,32 @@
-# TODO: Integrate Web Speech API for Text-to-Speech on Home Page
+# TODO: Enhance UI/UX and Remove Login/Signup Errors
 
 ## Information Gathered
-- The home page (Home.jsx) contains a hero section with the subtitle: "Master your career with AI-powered resume building, market intelligence, interview prep, and personalized career guidance."
-- The user wants to integrate Web Speech API to speak the text: "hello Master your career with AI-powered resume building, market intelligence, interview prep, and personalized career guidance."
-- This should be added without hampering existing code, likely as an optional feature triggered by a button.
+- LoginPage.jsx contains login/signup forms with error handling, but errors may occur due to API calls or mock implementations.
+- GoogleAuth component is a placeholder showing a message instead of real authentication.
+- Backend auth endpoints (/api/auth/register and /api/auth/login) are implemented and server is running.
+- Home page already has text-to-speech functionality.
+- Navbar and styles are responsive and modern, but could use minor enhancements.
+- App.jsx routes to login first, then protected routes with navbar.
 
 ## Plan
-- Modify `src/pages/Home.jsx` to add a "Speak Intro" button in the hero section.
-- Implement text-to-speech using the Web Speech API (SpeechSynthesis).
-- Add basic error handling for browsers that don't support speech synthesis.
-- Ensure the feature is non-blocking and doesn't interfere with existing functionality.
+- Enhance LoginPage.jsx: Improve design with better colors, animations, and error handling. Replace mock GoogleAuth with a better placeholder or remove it. Add better loading states and user feedback.
+- Update Navbar.jsx: Add a logout button if user is logged in (check localStorage for token).
+- Minor UI enhancements to Home.jsx: Add subtle animations or improve button styles.
+- Ensure no code is hampered: All changes are additive and non-breaking.
 
 ## Dependent Files to Edit
-- `src/pages/Home.jsx`: Add button and speech synthesis logic.
+- `src/pages/LoginPage.jsx`: Enhance UI, improve error messages, update GoogleAuth.
+- `src/components/Navbar/Navbar.jsx`: Add logout functionality.
+- `src/pages/Home.jsx`: Minor UI tweaks.
 
 ## Followup Steps
-- Test the speech functionality in different browsers.
-- Verify that the button works and speech plays correctly.
+- Test login/signup functionality to ensure errors are resolved.
+- Verify UI enhancements work on different screen sizes.
 - Check for any console errors or performance issues.
+
+## Completed Tasks
+- [x] Updated GoogleAuth message to be more informative.
+- [x] Added logout button to Navbar when user is logged in.
+- [x] Added logout functionality with token removal and navigation.
+- [x] Updated Navbar CSS for logout button styling.
+- [x] Changed "Watch Demo" button to "🎤 Listen Intro" for text-to-speech.

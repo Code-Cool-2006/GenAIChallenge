@@ -11,7 +11,7 @@ from .database import Base
 class User(Base):
     __tablename__ = 'users'
 
-    user_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     full_name = Column(String(100))
     email = Column(String(100), unique=True, index=True)
     password_hash = Column(String(255))
@@ -37,7 +37,7 @@ class User(Base):
 class Student(Base):
     __tablename__ = 'students'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     fullname = Column(String(100))
     email = Column(String(100), unique=True, index=True)
     mobile = Column(String(20))

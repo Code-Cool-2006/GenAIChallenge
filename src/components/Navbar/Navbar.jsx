@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
 import "./Navbar.css";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,7 +17,14 @@ function Navbar() {
       }
     };
 
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
     window.addEventListener("scroll", handleScroll);
+    checkLoginStatus();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrolled]);
 
@@ -25,6 +34,13 @@ function Navbar() {
 
   const closeMenu = () => {
     setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/");
+    closeMenu();
   };
 
   return (
@@ -110,6 +126,13 @@ function Navbar() {
                 Contact
               </Link>
             </li>
+            {isLoggedIn && (
+              <li className="nav-item">
+                <button className="nav-links logout-btn" onClick={handleLogout}>
+                  <FaSignOutAlt /> Logout
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
