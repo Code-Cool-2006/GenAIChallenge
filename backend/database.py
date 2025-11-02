@@ -11,7 +11,7 @@ load_dotenv()
 # Get the database URL from environment variables, with a default value for local development.
 # For local development, use SQLite. For production, use MySQL or PostgreSQL.
 #DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:O-S-N-312@localhost/careerbridge")
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql://root:uGnzTLNmIPWZbzxsOAgsgDFmihPOEqvS@metro.proxy.rlwy.net:47262/careerbridge")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./careerbridge.db")
 
 # The engine is the core interface to the database.
 engine = create_engine(DATABASE_URL)

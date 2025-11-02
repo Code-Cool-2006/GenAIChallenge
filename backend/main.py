@@ -3,8 +3,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .database import engine, Base  # Use relative import
-from backend.models import *  # Import models
-from backend.routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market # Assuming all these router files exist
+from .models import *  # Import models
+from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume # Assuming all these router files exist
 
 # Configure logging to see server status in the terminal
 logging.basicConfig(level=logging.INFO)
@@ -60,7 +60,7 @@ app.include_router(profile_routes)
 app.include_router(career_path_routes)
 app.include_router(interview_routes)
 app.include_router(job_market)
-# app.include_router(review_resume) # Assuming you have a review_resume.py router
+app.include_router(review_resume)
 logger.info("All routers included successfully.")
 
 

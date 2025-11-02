@@ -3,7 +3,7 @@ from sqlalchemy import (Column, Integer, String, Text, Date, DateTime,
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from backend.database import Base
+from .database import Base
 
 # --- Database Models ---
 # Each class represents a table in the database.
