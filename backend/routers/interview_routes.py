@@ -1,19 +1,69 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List
 
-from .. import schemas
-from ..services import gemini_service
+# Use package-relative imports
 from ..database import get_db
 from ..models import User, InterviewSession
-from .user import get_current_user
+from .. import schemas
+from ..utils.security import get_current_user
+from ..services import gemini_service
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
 # --- Router Setup ---
 router = APIRouter(
     prefix="/api/interview",
     tags=["Interview"]
 )
 
+# --- Pydantic Models ---
+class GenerateQuestionsRequest(BaseModel):
+    role: str
+
+class GenerateQuestionsResponse(BaseModel):
+    questions: List[str]
+
 # --- API Endpoints ---
+
+@router.post("/generate-questions", response_model=GenerateQuestionsResponse)
+def generate_interview_questions(
+    request: GenerateQuestionsRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Generates 8 interview questions for a given role using the Gemini API.
+    """
+    if not request.role:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Role cannot be empty."
+        )
+
+    try:
+        # 1. Get AI generated questions from the Gemini service
+        questions = gemini_service.generate_interview_questions(role=request.role)
+
+        # Check for errors from the service
+        if not questions or len(questions) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Unable to generate questions at this time."
+            )
+
+        # 2. Return the questions to the user
+        return {"questions": questions}
+
+    except Exception as e:
+        print(f"An unexpected error occurred in generating questions: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An internal error occurred while generating interview questions."
+        )
 
 @router.post("/feedback", response_model=schemas.InterviewFeedbackResponse)
 def get_interview_feedback(
@@ -37,7 +87,7 @@ def get_interview_feedback(
             question=request.question,
             user_answer=request.user_answer
         )
-        
+
         # Check for errors from the service
         if ai_feedback_text.startswith("Error:") or ai_feedback_text.startswith("Sorry,"):
              raise HTTPException(
@@ -55,12 +105,14 @@ def get_interview_feedback(
         )
         db.add(new_session)
         db.commit()
+        db.refresh(new_session)  # ensure the object has DB-generated fields populated
 
-        # 3. Return the feedback to the user
-        return {"feedback": ai_feedback_text}
+        # 3. Return the saved session (matches schemas.InterviewFeedbackResponse)
+        return {"session": new_session}
 
+    except HTTPException:
+        raise
     except Exception as e:
-        # Catch any other unexpected errors during the process
         print(f"An unexpected error occurred in interview feedback: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

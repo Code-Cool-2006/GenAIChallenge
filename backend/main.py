@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .database import engine, Base  # Assuming you have database.py
-from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume # Assuming all these router files exist
+from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume, chatbot # Assuming all these router files exist
 
 # Configure logging to see server status in the terminal
 logging.basicConfig(level=logging.INFO)
@@ -65,6 +65,7 @@ app.include_router(career_path_routes.router)
 app.include_router(interview_routes.router)
 app.include_router(job_market.router)
 app.include_router(review_resume.router) # Assuming you have a review_resume.py router
+app.include_router(chatbot.router)
 logger.info("All routers included successfully.")
 
 
@@ -73,4 +74,3 @@ logger.info("All routers included successfully.")
 @app.get("/", tags=["Health Check"])
 def read_root():
     return {"message": "Welcome to the CareerUp AI Backend!"}
-

@@ -70,15 +70,42 @@ def verify_token(token: str, credentials_exception: HTTPException) -> str:
     try:
         # Decode the token using the secret key and algorithm
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        
+
         # Extract the email from the 'sub' (subject) claim
         email: str = payload.get("sub")
         if email is None:
             # If the 'sub' claim is missing, the token is invalid
             raise credentials_exception
-            
+
         return email
     except JWTError:
         # If jose raises any decoding error, the token is invalid
         raise credentials_exception
+
+
+def get_current_user(token: str, db):
+    """
+    Dependency to get the current authenticated user.
+    It verifies the JWT token and fetches the user from the database.
+    This function will be used to protect routes.
+    """
+    from fastapi import HTTPException, status
+    from ..models import User
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    # Verify the token to get the user's email
+    email = verify_token(token, credentials_exception)
+
+    # Fetch the user from the database
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        # If no user is found with that email, the token is invalid
+        raise credentials_exception
+
+    return user
 

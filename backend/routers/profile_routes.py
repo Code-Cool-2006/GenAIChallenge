@@ -5,7 +5,7 @@ from typing import List
 from .. import schemas
 from ..database import get_db
 from ..models import User, Skill, Project, Experience, Education
-from .user import get_current_user
+from ..utils.security import get_current_user
 
 # --- Router Setup ---
 router = APIRouter(

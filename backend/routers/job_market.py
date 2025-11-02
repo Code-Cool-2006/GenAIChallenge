@@ -1,5 +1,5 @@
 import json
-import google.generativeai as genai
+import litellm
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
@@ -17,14 +17,12 @@ router = APIRouter(
 @router.post("/market-insights")
 async def get_market_insights(request: MarketInsightsRequest):
     """
-    Provides job market insights for a specific job title using Gemini.
+    Provides job market insights for a specific job title using LiteLLM.
     """
     print(f"Received market insights request for: {request.jobTitle}")
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction="""
-              You are a job market analyst. 
+        system_instruction = """
+              You are a job market analyst.
               Provide key insights for a specific job title.
               Respond ONLY with valid JSON in this format:
               {
@@ -36,18 +34,25 @@ async def get_market_insights(request: MarketInsightsRequest):
               }
               Provide 5–10 top skills dynamically based on the role.
             """
-        )
-        
+
         prompt = f'Provide job market insights for a "{request.jobTitle}".'
 
-        print("Generating market insights from Gemini...")
-        response = model.generate_content(prompt)
+        print("Generating market insights from LiteLLM...")
+        response = litellm.completion(
+            model=litellm.model,
+            messages=[
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": prompt}
+            ]
+        )
 
-        if not response.text or not response.text.strip():
+        result_text = response.choices[0].message.content
+
+        if not result_text or not result_text.strip():
             raise HTTPException(status_code=500, detail="The model returned an empty response.")
-        
+
         # Clean and parse the JSON response from the model
-        cleaned_text = response.text.replace("```json", "").replace("```", "").strip()
+        cleaned_text = result_text.replace("```json", "").replace("```", "").strip()
         insights_data = json.loads(cleaned_text)
 
         print("Market insights generated successfully.")

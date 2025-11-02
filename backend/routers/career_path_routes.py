@@ -5,7 +5,7 @@ from .. import schemas
 from ..services import gemini_service
 from ..database import get_db
 from ..models import User
-from .user import get_current_user
+from ..utils.security import get_current_user
 
 # --- Router Setup ---
 router = APIRouter(

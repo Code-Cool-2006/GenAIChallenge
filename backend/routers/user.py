@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..models import User
-from ..schemas import UserSchema
-from ..utils import security
+from .. import schemas
+from ..utils.security import verify_token
 
 # --- Router Setup ---
 router = APIRouter(
@@ -30,7 +30,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     
     # Verify the token to get the user's email
-    email = security.verify_token(token, credentials_exception)
+    email = verify_token(token, credentials_exception)
     
     # Fetch the user from the database
     user = db.query(User).filter(User.email == email).first()
@@ -43,7 +43,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 # --- API Endpoints ---
 
-@router.get("/me", response_model=UserSchema)
+@router.get("/me", response_model=schemas.UserSchema)
 def read_users_me(current_user: User = Depends(get_current_user)):
     """
     Get profile information for the currently logged-in user.

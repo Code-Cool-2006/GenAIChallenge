@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import "./CSS/home.css";
 
 // --- Helper Components ---
 // Loading animation
@@ -104,7 +105,7 @@ export default function ResumeReviewPage({ studentProfile }) {
 
     try {
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: `You are an expert career coach and recruiter specializing in helping students from Tier 2/3 colleges land jobs at top companies.
 Your feedback must be constructive, encouraging, and highly actionable.
 Analyze the resume for ATS compatibility, impact metrics, action verbs, and clarity.

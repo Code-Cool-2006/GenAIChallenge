@@ -103,7 +103,7 @@ export default function MockInterview() {
   const generateAiQuestions = async (role) => {
     setIsLoadingQuestions(true);
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       const prompt = `Generate 8 interview questions for the role of ${role} in a professional and concise manner. Number them 1-8 and make each question on a new line.`;
       const result = await model.generateContent(prompt);
       const response = await result.response;

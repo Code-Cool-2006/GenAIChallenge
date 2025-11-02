@@ -1,4 +1,5 @@
 import os
+import re
 import litellm
 from dotenv import load_dotenv
 
@@ -55,6 +56,38 @@ def generate_career_path(job_title: str) -> str:
         print(f"An error occurred while calling the AI API: {e}")
         return "Sorry, there was an issue generating the career path. Please try again later."
 
+
+def generate_interview_questions(role: str) -> list[str]:
+    """
+    Generates 8 interview questions for a given role using LiteLLM.
+
+    Args:
+        role: The job role for which to generate questions.
+
+    Returns:
+        A list of 8 interview questions.
+    """
+    prompt = f"""
+    Act as an expert interviewer. Generate 8 professional interview questions for the role of {role}.
+    The questions should be diverse, covering behavioral, technical, and situational aspects.
+    Number them 1-8 and make each question on a new line.
+    Do not include any additional text or explanations.
+    """
+    try:
+        response = litellm.completion(
+            model=litellm.model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        generated_text = response.choices[0].message.content
+        # Split questions by new lines and filter out empty lines
+        questions = generated_text.split("\n")
+        questions = [q.strip() for q in questions if q.strip()]
+        # Remove numbering if present
+        questions = [re.sub(r"^\d+\.\s*", "", q) for q in questions]
+        return questions[:8]  # Ensure we return exactly 8 questions
+    except Exception as e:
+        print(f"An error occurred while calling the AI API: {e}")
+        return []
 
 def generate_interview_feedback(question: str, user_answer: str) -> str:
     """
