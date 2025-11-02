@@ -5,6 +5,36 @@ const App = () => {
   // All JavaScript logic is moved into this useEffect hook.
   // It runs once when the component mounts.
   useEffect(() => {
+    // --- Robot Voice Over Function ---
+    const speakRobotVoice = (text) => {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.8; // Slower rate for robotic effect
+        utterance.pitch = 0.5; // Lower pitch for robotic effect
+        utterance.volume = 0.8;
+
+        // Try to find a robotic voice
+        const voices = speechSynthesis.getVoices();
+        const robotVoice = voices.find(voice =>
+          voice.name.toLowerCase().includes('robot') ||
+          voice.name.toLowerCase().includes('computer') ||
+          voice.name.toLowerCase().includes('synthetic') ||
+          voice.name.toLowerCase().includes('google') ||
+          voice.name.toLowerCase().includes('microsoft')
+        );
+
+        if (robotVoice) {
+          utterance.voice = robotVoice;
+        }
+
+        speechSynthesis.speak(utterance);
+      }
+    };
+
+    // Speak the welcome message on page load
+    const welcomeText = "hello, welcome to Career AI. Empowering your career journey with AI-driven tools for personalized experience .";
+    speakRobotVoice(welcomeText);
+
     // --- Helper Functions from your <script> tag ---
 
     // Smooth navigation scroll behavior
@@ -41,7 +71,7 @@ const App = () => {
       if (!heroContent) return;
 
       const rect = heroContent.getBoundingClientRect();
-      
+
       // Check if mouse is over the hero section
       if (rect.top < e.clientY && rect.bottom > e.clientY && rect.left < e.clientX && rect.right > e.clientX) {
         const x = e.clientX - rect.left;
@@ -132,7 +162,7 @@ const App = () => {
 
       elements.forEach((element) => observer.observe(element));
     };
-    
+
     // Scroll-based navigation highlighting
     const navHighlightHandler = () => {
         const sections = document.querySelectorAll("section[id]");
@@ -165,7 +195,7 @@ const App = () => {
       const size = Math.max(rect.width, rect.height);
       const x = e.clientX - rect.left - size / 2;
       const y = e.clientY - rect.top - size / 2;
-      
+
       // Add ripple styles dynamically
       ripple.style.width = ripple.style.height = size + "px";
       ripple.style.left = x + "px";
@@ -222,7 +252,7 @@ const App = () => {
         container.appendChild(particle);
       }
     };
-    
+
     // --- Attach Listeners & Run Init Functions ---
     const anchors = document.querySelectorAll('a[href^="#"]');
     anchors.forEach((anchor) => {
@@ -263,7 +293,7 @@ const App = () => {
             card.removeEventListener("mousemove", cardMousemoveHandler);
             card.removeEventListener("mouseleave", cardMouseleaveHandler);
         });
-        
+
         buttons.forEach((button) => {
             button.removeEventListener("click", rippleClickHandler);
         });
@@ -287,7 +317,7 @@ const App = () => {
       </div>
       <div className="particles" id="particlesContainer"></div>
 
-    
+
 
       {/* Hero Section */}
       <section className="hero" id="home">
