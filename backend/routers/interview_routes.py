@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from .. import schemas
+from ..schemas import InterviewFeedbackRequest, InterviewFeedbackResponse
 from ..services import gemini_service
 from ..database import get_db
 from ..models import User, InterviewSession
@@ -15,9 +15,9 @@ router = APIRouter(
 
 # --- API Endpoints ---
 
-@router.post("/feedback", response_model=schemas.InterviewFeedbackResponse)
+@router.post("/feedback", response_model=InterviewFeedbackResponse)
 def get_interview_feedback(
-    request: schemas.InterviewFeedbackRequest,
+    request: InterviewFeedbackRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

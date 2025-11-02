@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from .. import schemas
+from ..schemas import SkillBase, SkillSchema, ProjectBase, ProjectSchema, ExperienceBase, ExperienceSchema, EducationBase, EducationSchema
 from ..database import get_db
 from ..models import User, Skill, Project, Experience, Education
 from .user import get_current_user
@@ -25,9 +25,9 @@ def get_profile_item(db: Session, model, item_id: int, user_id: int):
 
 # --- Skills Endpoints ---
 
-@router.post("/skills", response_model=schemas.SkillSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/skills", response_model=SkillSchema, status_code=status.HTTP_201_CREATED)
 def add_skill_to_profile(
-    skill_data: schemas.SkillBase,  # Corrected from SkillCreate
+    skill_data: SkillBase,  # Corrected from SkillCreate
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -37,10 +37,10 @@ def add_skill_to_profile(
     db.refresh(new_skill)
     return new_skill
 
-@router.put("/skills/{skill_id}", response_model=schemas.SkillSchema)
+@router.put("/skills/{skill_id}", response_model=SkillSchema)
 def update_skill_in_profile(
     skill_id: int,
-    skill_data: schemas.SkillBase, # Corrected from SkillCreate
+    skill_data: SkillBase, # Corrected from SkillCreate
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -64,9 +64,9 @@ def delete_skill_from_profile(
 
 # --- Projects Endpoints ---
 
-@router.post("/projects", response_model=schemas.ProjectSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/projects", response_model=ProjectSchema, status_code=status.HTTP_201_CREATED)
 def add_project_to_profile(
-    project_data: schemas.ProjectBase, # Corrected from ProjectCreate
+    project_data: ProjectBase, # Corrected from ProjectCreate
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -78,9 +78,9 @@ def add_project_to_profile(
 
 # --- Experience Endpoints ---
 
-@router.post("/experience", response_model=schemas.ExperienceSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/experience", response_model=ExperienceSchema, status_code=status.HTTP_201_CREATED)
 def add_experience_to_profile(
-    experience_data: schemas.ExperienceBase, # Corrected from ExperienceCreate
+    experience_data: ExperienceBase, # Corrected from ExperienceCreate
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -92,9 +92,9 @@ def add_experience_to_profile(
 
 # --- Education Endpoints ---
 
-@router.post("/education", response_model=schemas.EducationSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/education", response_model=EducationSchema, status_code=status.HTTP_201_CREATED)
 def add_education_to_profile(
-    education_data: schemas.EducationBase, # Corrected from EducationCreate
+    education_data: EducationBase, # Corrected from EducationCreate
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

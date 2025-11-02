@@ -4,10 +4,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta, datetime
 
-from .. import schemas
+from ..schemas import UserCreate, UserSchema
 from ..database import get_db
 from ..models import User, Student
-from ..utils import security
+from ..utils.security import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 # --- Router Setup ---
 router = APIRouter(
@@ -17,8 +17,8 @@ router = APIRouter(
 
 # --- API Endpoints ---
 
-@router.post("/register", response_model=schemas.UserSchema, status_code=status.HTTP_201_CREATED)
-def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
+def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     """
     Register a new user.
     Hashes the password before storing it in the database.
@@ -32,7 +32,7 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
         )
 
     # Hash the password
-    hashed_password = security.hash_password(user_data.password)
+    hashed_password = hash_password(user_data.password)
 
     # Create new user instance
     new_user = User(
@@ -73,7 +73,7 @@ def login_for_access_token(
     user = db.query(User).filter(User.email == form_data.username).first()
 
     # Check if user exists and password is correct
-    if not user or not security.verify_password(form_data.password, user.password_hash):
+    if not user or not verify_password(form_data.password, user.password_hash):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"detail": "Incorrect email or password"},
@@ -91,8 +91,8 @@ def login_for_access_token(
         db.commit()
 
     # Create access token
-    access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = security.create_access_token(
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
 

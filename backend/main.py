@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .database import engine, Base  # Assuming you have database.py
-from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market, review_resume # Assuming all these router files exist
+from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market # Assuming all these router files exist
 
 # Configure logging to see server status in the terminal
 logging.basicConfig(level=logging.INFO)
@@ -53,13 +53,13 @@ app.add_middleware(
 # --- Include All Routers ---
 # This adds all the API endpoints from your different feature files to the main app.
 logger.info("Including API routers...")
-app.include_router(auth.router)
-app.include_router(user.router)
-app.include_router(profile_routes.router)
-app.include_router(career_path_routes.router)
-app.include_router(interview_routes.router)
-app.include_router(job_market.router)
-app.include_router(review_resume.router) # Assuming you have a review_resume.py router
+app.include_router(auth)
+app.include_router(user)
+app.include_router(profile_routes)
+app.include_router(career_path_routes)
+app.include_router(interview_routes)
+app.include_router(job_market)
+# app.include_router(review_resume) # Assuming you have a review_resume.py router
 logger.info("All routers included successfully.")
 
 

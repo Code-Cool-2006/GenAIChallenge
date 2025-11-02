@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from .. import schemas
+from ..schemas import CareerPathRequest, CareerPathResponse
 from ..services import gemini_service
 from ..database import get_db
 from ..models import User
@@ -15,9 +15,9 @@ router = APIRouter(
 
 # --- API Endpoints ---
 
-@router.post("/generate-roadmap", response_model=schemas.CareerPathResponse)
+@router.post("/generate-roadmap", response_model=CareerPathResponse)
 def generate_user_career_roadmap(
-    request: schemas.CareerPathRequest, 
+    request: CareerPathRequest,
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user)
 ):
