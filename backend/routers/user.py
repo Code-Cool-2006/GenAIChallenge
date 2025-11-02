@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import User
-from ..schemas import UserSchema
-from ..utils.security import verify_token
+from backend.database import get_db
+from backend.models import User
+from backend.schemas import UserSchema
+from backend.utils.security import verify_token
 
 # --- Router Setup ---
 router = APIRouter(
@@ -30,7 +30,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     
     # Verify the token to get the user's email
-    email = security.verify_token(token, credentials_exception)
+    email = verify_token(token, credentials_exception)
     
     # Fetch the user from the database
     user = db.query(User).filter(User.email == email).first()

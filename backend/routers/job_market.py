@@ -2,7 +2,7 @@ import json
 import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from ..services.vertex_ai_service import vertex_ai_service
+from backend.services.vertex_ai_service import vertex_ai_service
 
 # --- Pydantic Model for Request Body ---
 class MarketInsightsRequest(BaseModel):

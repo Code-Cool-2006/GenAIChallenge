@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from ..schemas import SkillBase, SkillSchema, ProjectBase, ProjectSchema, ExperienceBase, ExperienceSchema, EducationBase, EducationSchema
-from ..database import get_db
-from ..models import User, Skill, Project, Experience, Education
+from backend.schemas import SkillBase, SkillSchema, ProjectBase, ProjectSchema, ExperienceBase, ExperienceSchema, EducationBase, EducationSchema
+from backend.database import get_db
+from backend.models import User, Skill, Project, Experience, Education
 from .user import get_current_user
 
 # --- Router Setup ---

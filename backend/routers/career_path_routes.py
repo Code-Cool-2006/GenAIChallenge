@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..schemas import CareerPathRequest, CareerPathResponse
-from ..services import gemini_service
-from ..database import get_db
-from ..models import User
+from backend.schemas import CareerPathRequest, CareerPathResponse
+from backend.services import gemini_service
+from backend.database import get_db
+from backend.models import User
 from .user import get_current_user
 
 # --- Router Setup ---

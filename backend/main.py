@@ -2,8 +2,8 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from .database import engine, Base  # Assuming you have database.py
-from .routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market # Assuming all these router files exist
+from backend.database import engine, Base  # Assuming you have database.py
+from backend.routers import auth, user, profile_routes, career_path_routes, interview_routes, job_market # Assuming all these router files exist
 
 # Configure logging to see server status in the terminal
 logging.basicConfig(level=logging.INFO)
