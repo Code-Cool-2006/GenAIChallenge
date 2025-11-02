@@ -1,9 +1,9 @@
 from sqlalchemy import (Column, Integer, String, Text, Date, DateTime,
-                        ForeignKey, Enum, DECIMAL, JSON)
+                       ForeignKey, Enum, DECIMAL, JSON)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from .database import Base
+from backend.database import Base
 
 # --- Database Models ---
 # Each class represents a table in the database.

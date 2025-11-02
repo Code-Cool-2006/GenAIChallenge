@@ -38,6 +38,7 @@ const LoginPage = () => {
   );
   const [isTipLoading, setIsTipLoading] = useState(false);
   const [roleDescription, setRoleDescription] = useState("");
+  const [error, setError] = useState(""); // Add this near other state declarations
 
   // --- Helper Functions ---
 
@@ -137,39 +138,50 @@ const LoginPage = () => {
     }
   };
 
+  // Replace the handleLogin function
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     setMessage("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          username: email,
-          password: password,
-        }),
-      });
+        const formData = new URLSearchParams();
+        formData.append('username', email);  // OAuth2 expects 'username', not 'email'
+        formData.append('password', password);
 
-      const data = await response.json();
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: formData
+        });
 
-      if (response.ok) {
-        localStorage.setItem("token", data.access_token);
-        setMessage("✅ Login successful! Redirecting...");
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || 'Login failed');
+        }
+
+        // Store token and user data
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        setMessage("✅ Login successful!");
+        
+        // Short delay before navigation to show success message
         setTimeout(() => {
-          navigate('/home');
-        }, 1500);
-      } else {
-        setMessage(`❌ ${data.detail || "Login failed"}`);
-      }
+            navigate('/home');
+        }, 500);
+
     } catch (error) {
-      console.error("Login error:", error);
-      setMessage("❌ An error occurred during login. Please try again.");
+        console.error('Login error:', error);
+        setError(error.message);
+        setMessage(`❌ ${error.message}`);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
@@ -528,11 +540,25 @@ const LoginPage = () => {
                 <form onSubmit={handleLogin} className="auth-form">
                   <div className="input-group">
                     <label htmlFor="email">Email Address</label>
-                    <input type="email" id="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="you@example.com" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
                   </div>
                   <div className="input-group">
                     <label htmlFor="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="••••••••" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        required 
+                    />
                   </div>
                   <div className="forgot-password">
                     <a href="#" onClick={handleForgotPassword}>Forgot password?</a>

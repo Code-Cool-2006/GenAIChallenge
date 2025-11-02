@@ -1,84 +1,80 @@
-import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Optional
-
-from dotenv import load_dotenv
-from fastapi import HTTPException, status
 from jose import JWTError, jwt
+from fastapi import HTTPException, status
 from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordBearer
+import os
+from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# --- Configuration ---
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-here")  # Default for development
-ALGORITHM = "HS256"  # The algorithm used to sign the JWT
-ACCESS_TOKEN_EXPIRE_MINUTES = 60  # The token will be valid for 60 minutes
+# Security configuration
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not JWT_SECRET_KEY:
+    raise ValueError("JWT_SECRET_KEY not found in environment variables")
 
-# --- Password Hashing Setup ---
-# We use passlib to handle password hashing and verification.
-# argon2 and scrypt are strong and widely-used algorithms for this purpose.
-pwd_context = CryptContext(schemes=["argon2", "scrypt"], deprecated="auto")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
+# Password hashing configuration
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# point to the token endpoint we will expose
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
-def hash_password(password: str) -> str:
-    """Hashes a plain-text password using bcrypt."""
+def get_password_hash(password: str) -> str:
+    """Hash a password using bcrypt"""
+    if not password:
+        raise ValueError("Password cannot be empty")
     return pwd_context.hash(password)
 
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifies a plain-text password against its hashed version."""
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-# --- JWT (Access Token) Functions ---
+    """Verify a password against its hash"""
+    if not plain_password or not hashed_password:
+        return False
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """
-    Creates a new JWT access token.
-
-    Args:
-        data: The payload to encode into the token (e.g., user's email).
-        expires_delta: An optional timedelta to set a custom expiration time.
-
-    Returns:
-        The encoded JWT as a string.
-    """
+    """Create a JWT access token"""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.utcnow() + expires_delta
     else:
-        # Default expiration time if none is provided
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
-
-def verify_token(token: str, credentials_exception: HTTPException) -> str:
+def verify_token(token: str) -> dict:
     """
-    Verifies a JWT access token.
-
+    Verify a JWT token and return the decoded payload
+    
     Args:
-        token: The JWT string from the request's Authorization header.
-        credentials_exception: The exception to raise if validation fails.
-
+        token (str): The JWT token to verify
+        
     Returns:
-        The user's email (the 'sub' claim) if the token is valid.
+        dict: The decoded token payload
+        
+    Raises:
+        HTTPException: If token is invalid or expired
     """
     try:
-        # Decode the token using the secret key and algorithm
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        
-        # Extract the email from the 'sub' (subject) claim
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
-            # If the 'sub' claim is missing, the token is invalid
-            raise credentials_exception
-            
-        return email
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return payload
     except JWTError:
-        # If jose raises any decoding error, the token is invalid
-        raise credentials_exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
