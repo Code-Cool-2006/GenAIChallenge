@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Add this import
+import config from '../config.json';
 
   // --- GoogleAuth Component (Placeholder) ---
 const GoogleAuth = ({ setMessage }) => {
@@ -154,7 +155,8 @@ const LoginPage = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${config.AUTH_TOKEN}`
             },
             body: formData
         });
